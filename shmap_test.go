@@ -52,7 +52,7 @@ func TestRange(t *testing.T) {
 
 func TestRangeEarlyStop(t *testing.T) {
 	m := WithShards[string, int](16)
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		m.Set(strconv.Itoa(i), i)
 	}
 	count := 0
@@ -66,7 +66,7 @@ func TestConcurrentSetGet(t *testing.T) {
 	m := WithShards[string, int](32)
 	n := 1000
 	keys := make([]string, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		keys[i] = "k" + strconv.Itoa(i)
 	}
 
@@ -76,7 +76,7 @@ func TestConcurrentSetGet(t *testing.T) {
 	go func() { // writer
 		defer wg.Done()
 		r := rand.New(rand.NewSource(42))
-		for i := 0; i < 20000; i++ {
+		for i := range 20000 {
 			k := keys[r.Intn(n)]
 			m.Set(k, i)
 		}
@@ -84,14 +84,14 @@ func TestConcurrentSetGet(t *testing.T) {
 	go func() { // reader
 		defer wg.Done()
 		r := rand.New(rand.NewSource(43))
-		for i := 0; i < 20000; i++ {
+		for range 20000 {
 			k := keys[r.Intn(n)]
 			_, _ = m.Get(k)
 		}
 	}()
 	go func() { // ranger
 		defer wg.Done()
-		for i := 0; i < 20000; i++ {
+		for _ = range 20000 {
 			m.Range(func(k string, v int) bool { return true })
 		}
 	}()

@@ -61,7 +61,7 @@ const benchKeyCount = 100_000
 
 func genKeys(n int) []string {
 	keys := make([]string, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		keys[i] = "key-" + strconv.Itoa(i)
 	}
 	return keys
@@ -230,12 +230,12 @@ func BenchmarkGoroutineScaling(b *testing.B) {
 					var wg sync.WaitGroup
 					opsPerGoroutine := b.N / count
 
-					for i := 0; i < count; i++ {
+					for i := range count {
 						wg.Add(1)
 						go func(seed int64) {
 							defer wg.Done()
 							r := rand.New(rand.NewSource(seed))
-							for j := 0; j < opsPerGoroutine; j++ {
+							for _ = range opsPerGoroutine {
 								k := keys[r.Intn(len(keys))]
 								if r.Intn(100) < 20 { // 20% writes
 									m.Set(k, r.Int())
@@ -326,21 +326,21 @@ func BenchmarkHashFunctions(b *testing.B) {
 
 	b.Run("StringHasher", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			_ = StringHasher(testString)
 		}
 	})
 
 	b.Run("IntHasher", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			_ = IntHasher(testInt)
 		}
 	})
 
 	b.Run("FloatHasher", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			_ = FloatHasher(testFloat)
 		}
 	})
@@ -439,7 +439,7 @@ func BenchmarkRangeOperations(b *testing.B) {
 
 	// Pre-populate with additional keys for range testing
 	populateForRange := func(m interface{ Set(string, int) }) {
-		for i := 0; i < rangeKeyCount; i++ {
+		for i := range rangeKeyCount {
 			m.Set(fmt.Sprintf("range-key-%d", i), i)
 		}
 	}
@@ -449,7 +449,7 @@ func BenchmarkRangeOperations(b *testing.B) {
 		populateForRange(m)
 		b.ResetTimer()
 
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			count := 0
 			m.Range(func(string, int) bool {
 				count++
@@ -464,7 +464,7 @@ func BenchmarkRangeOperations(b *testing.B) {
 		populateForRange(m)
 		b.ResetTimer()
 
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			count := 0
 			m.Range(func(string, int) bool {
 				count++
@@ -479,7 +479,7 @@ func BenchmarkRangeOperations(b *testing.B) {
 		populateForRange(m)
 		b.ResetTimer()
 
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			count := 0
 			m.Range(func(string, int) bool {
 				count++
@@ -495,7 +495,7 @@ func BenchmarkRangeOperations(b *testing.B) {
 func BenchmarkConstructionCost(b *testing.B) {
 	b.Run("shmap", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			m := WithShards[string, int](128)
 			runtime.KeepAlive(m)
 		}
@@ -503,7 +503,7 @@ func BenchmarkConstructionCost(b *testing.B) {
 
 	b.Run("rwmap", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			m := newRWMap()
 			runtime.KeepAlive(m)
 		}
@@ -511,7 +511,7 @@ func BenchmarkConstructionCost(b *testing.B) {
 
 	b.Run("syncmap", func(b *testing.B) {
 		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
+		for _ = range b.N {
 			m := newSyncMap()
 			runtime.KeepAlive(m)
 		}
@@ -531,7 +531,7 @@ func BenchmarkKeyTypes(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for i := 0; i < b.N; i++ {
+		for i := range b.N {
 			_, _ = m.Get(i % iterations)
 		}
 	})
@@ -545,7 +545,7 @@ func BenchmarkKeyTypes(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for i := 0; i < b.N; i++ {
+		for i := range b.N {
 			_, _ = m.Get(keys[i%len(keys)])
 		}
 	})
