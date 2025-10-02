@@ -10,12 +10,12 @@ A high-performance, lock-sharded hash map for Go with zero-allocation hashing an
 
 ## Key Features
 
-- **🚀 Reduced Lock Contention**: Configurable lock sharding distributes concurrent access across multiple segments
-- **⚡ Zero-Allocation Hashing**: Custom hash functions for common types (string, int, uint, float) eliminate allocation overhead  
-- **🔒 Type Safety**: Full generic support with compile-time type checking
-- **📊 Proven Performance**: Comprehensive benchmarks against `sync.Map` and `sync.RWMutex` solutions
-- **🎛️ Configurable**: Tune shard count based on your concurrency patterns
-- **🔧 Extensible**: Custom hash functions for specialized key types
+- **Reduced Lock Contention**: Configurable lock sharding distributes concurrent access across multiple segments
+- **Zero-Allocation Hashing**: Custom hash functions for common types (string, int, uint, float) eliminate allocation overhead  
+- **Type Safety**: Full generic support with compile-time type checking
+- **Proven Performance**: Comprehensive benchmarks against `sync.Map` and `sync.RWMutex` solutions
+- **Configurable**: Tune shard count based on your concurrency patterns
+- **Extensible**: Custom hash functions for specialized key types
 
 ## Installation
 
@@ -94,13 +94,13 @@ m.Range(func(key K, value V) bool {
 
 ### When to Use shmap
 
-**✅ Ideal for:**
+**Ideal for:**
 - High-concurrency read/write workloads
 - Multiple goroutines accessing shared data
 - Applications with mixed read/write patterns
 - Systems where lock contention is a bottleneck
 
-**❌ Consider alternatives for:**
+**Consider alternatives for:**
 - Single-threaded access patterns
 - Extremely write-heavy workloads with few keys
 - Memory-constrained environments where overhead matters
@@ -260,10 +260,10 @@ m := shmap.WithHasher[UserID, User](hashUserID)
 
 ## Thread Safety
 
-- ✅ **Concurrent reads**: Multiple goroutines can safely read simultaneously
-- ✅ **Concurrent writes**: Writes to different shards don't block each other  
-- ✅ **Mixed operations**: Reads and writes can happen concurrently
-- ⚠️ **Range iteration**: Not linearizable - may see inconsistent snapshots during concurrent modifications
+- **Concurrent reads**: Multiple goroutines can safely read simultaneously
+- **Concurrent writes**: Writes to different shards don't block each other  
+- **Mixed operations**: Reads and writes can happen concurrently
+- **Range iteration**: Not linearizable - may see inconsistent snapshots during concurrent modifications
 
 ## Comparisons
 
@@ -298,7 +298,3 @@ go test -bench=BenchmarkShmap -bench=BenchmarkRWMap -bench=BenchmarkSyncMap
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-*Built with ❤️ for high-performance Go applications*
